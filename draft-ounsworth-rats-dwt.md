@@ -21,7 +21,9 @@
 ###
 title: DER Web Token
 docname: draft-ounsworth-rats-dwt-latest
-submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
+category: std
+submissiontype: IETF
+
 number:
 date:
 consensus: true
