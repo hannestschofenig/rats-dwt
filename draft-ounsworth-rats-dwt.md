@@ -19,11 +19,8 @@
 # Change the file extension to match the format (.xml for XML, etc...)
 #
 ###
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
-category: info
-
-docname: draft-todo-yourname-protocol-latest
+title: DER Web Token
+docname: draft-ounsworth-rats-dwt-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
