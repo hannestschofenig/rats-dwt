@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-12-26T01:13:49.956150+00:00",
+  "timestamp": "2024-12-29T01:20:49.620472+00:00",
   "repo": "hannestschofenig/rats-dwt",
   "labels": [
     {
@@ -50,5 +50,32 @@
     }
   ],
   "issues": [],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDONUBbhs6GU09g",
+      "title": "Removing non-EAT Claims",
+      "url": "https://github.com/hannestschofenig/rats-dwt/pull/1",
+      "state": "OPEN",
+      "author": "hannestschofenig",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Changes made based on design team call from the 16th of December 2024.\r\n\r\n\r\n> ACTION ITEM (decided): the draft-dwt should remove any new claims \r\n>  not already in EAT. Henk suggests just moving them into the Key Attestation draft (rather than make a 3rd draft).\r\n\r\nhttps://github.com/hannestschofenig/key-attestation/blob/main/meetingNotes/2024-12-16.md",
+      "createdAt": "2024-12-27T17:20:53Z",
+      "updatedAt": "2024-12-27T17:20:53Z",
+      "baseRepository": "hannestschofenig/rats-dwt",
+      "baseRefName": "main",
+      "baseRefOid": "96fcc6b8abceb65c61b0cdc0f9cd0fa933f331a4",
+      "headRepository": "hannestschofenig/rats-dwt",
+      "headRefName": "hannestschofenig-patch-1",
+      "headRefOid": "99406d31eae38bb7f267eaebe4f219a5047e2085",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    }
+  ]
 }
