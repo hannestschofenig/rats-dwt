@@ -250,13 +250,12 @@ should ensure that this case is handled by verifying logic.
 
 | Claim          | Value        | Section           |
 | --------       | ------------ | ----------------- |
+| Nonce          | OCTET STRING | {{sect-nonce}}     |
+| Ueid           | UTF8String   | {{sect-ueid}}     |
+| Sueid          | UTF8String   | {{sect-sueid}}    |
 | Oemid          | UTF8String   | {{sect-deviceID}} |
 | Hwmodel        | UTF8String   | {{sect-deviceID}} |
 | Hwversion      | UTF8String   | {{sect-deviceID}} |
-| Hwserial       | UTF8String   | {{sect-deviceID}} |
-| Ueid           | UTF8String   | {{sect-ueid}}     |
-| Sueid          | UTF8String   | {{sect-sueid}}    |
-| EnvID          | UTF8String   | {{sect-envID}}    |
 | Swname         | UTF8String   | {{sect-swID}}     |
 | Swversion      | UTF8String   | {{sect-swID}}     |
 | Oemboot        | BOOLEAN      | {{sect-oemboot}}  |
@@ -266,23 +265,22 @@ should ensure that this case is handled by verifying logic.
 | Bootcount      | INTEGER      | {{sect-bootcount}}|
 | Bootseed       | BIT STRING   | {{sect-bootseed}} |
 | Dloas          | SEQUENCE OF Dloa | {{sect-dloas}}    |
-| Endorsements   | SEQUENCE of Endorsement | {{sect-endorsements}} |
 | Manifests      | ??           | {{sect-manifests}} |
 | Measurements   | ??           | {{sect-measurements}} |
 | Measres        | ??           | {{sect-measres}}   |
 | Submods        | ??           | {{sect-submods}}   |
 | Iat            | Time         | {{sect-iat}}       |
-| Nonce          | OCTET STRING | {{sect-nonce}}     |
+| Profile        | ??           | {{sect-profile}}   |
+| Intuse         | ??           | {{sect-intuse}}    |
 
 | Claim          | OID      | Status       |
 | --------       | -------- | ------------ |
+| Nonce          | TBD      | OPTIONAL     |
+| Ueid           | TBD      | OPTIONAL     |
+| Sueid          | TBD      | OPTIONAL     |
 | Oemid          | TBD      | RECOMMENDED  |
 | Hwmodel        | TBD      | RECOMMENDED  |
 | Hwversion      | TBD      | RECOMMENDED  |
-| Hwserial       | TBD      | RECOMMENDED  |
-| Ueid           | TBD      | OPTIONAL     |
-| Sueid          | TBD      | OPTIONAL     |
-| EnvID          | TBD      | OPTIONAL     |
 | Swname         | TBD      | RECOMMENDED  |
 | Swversion      | TBD      | RECOMMENDED  |
 | Oemboot        | TBD      | RECOMMENDED  |
@@ -292,22 +290,40 @@ should ensure that this case is handled by verifying logic.
 | Bootcount      | TBD      | OPTIONAL     |
 | Bootseed       | TBD      | OPTIONAL     |
 | Dloas          | TBD      | OPTIONAL     |
-| Endorsements   | TBD      | OPTIONAL     |
 | Manifests      | TBD      | OPTIONAL     |
 | Measurements   | TBD      | OPTIONAL     |
 | Measres        | TBD      | OPTIONAL     |
 | Submods        | TBD      | OPTIONAL     |
 | Iat            | TBD      | RECOMMENDED  |
-| Nonce          | TBD      | OPTIONAL     |
+| Profile        | TBD      | OPTIONAL     |
+| Intuse         | TBD      | OPTIONAL     |
+
+## Nonce {#sect-nonce}
+
+The "nonce" claim is used to provide freshness.
+
+The Nonce claim is used to carry the challenge provided by the caller to
+demonstrate freshness of the generated token. The following constraints
+apply to the nonce-type:
+
+- The length must be reasonable as it may be processed by end entities with limited resources.
+  Therefore, it is RECOMMENDED that the length does not exceed 64 bytes.
+- Only a single nonce value is conveyed.
+
+The nonce claim is defined as follows:
+
+~~~ asn.1
+Nonce EVIDENCE-CLAIM ::= OCTET STRING IDENTIFIED BY TBD
+~~~
+
+See Section 4.1 of {{I-D.ietf-rats-eat}} for a description of this claim.
 
 ## Device Identifier {#sect-deviceID}
 
 Devices assigned a Universal Entity ID compliant with RATS EAT SHOULD
-provide this in the `Ueid` or `Sueid` claim. Devices with a traditional
-human-readable serial number SHOULD provide this in the `Hwserial` claim.
-Both MAY be provided.
+provide this in the `Ueid` or `Sueid` claim. Both MAY be provided.
 
-The set `{OemID, Hwmodel, Hwversion, Hwserial}`, when provided, SHOULD
+The set `{OemID, Hwmodel, Hwversion}`, when provided, SHOULD
 represent a universally unique identification of the device. Where
 applicable, `{OemID, Hwmodel, Hwversion}` SHOULD match the way the
 device is identified in relevant endorsements, such as published FIPS
@@ -428,18 +444,6 @@ The hwversion claim is defined as follows:
    hwversion ::= OCTET STRING
 ~~~
 
-
-## Environment Identifier {#sect-envID}
-
-~~~ asn.1
-EnvID EVIDENCE-CLAIM ::= UTF8String IDENTIFIED BY TBD
-~~~
-
-This claim MAY be used to identify a partition within a cryptographic
-device, or a logical environment that spans multiple cryptographic
-devices such as a Security World or a cloud tenant. The format of
-these identifiers will be vendor or environment specific.
-
 ## Software Identifier {#sect-swID}
 
 ~~~ asn.1
@@ -549,26 +553,6 @@ Dloa ::= SEQUENCE IDENTIFIED BY TBD {
   -- semantics defined in rats-eat-4.2.14
 ~~~
 
-## Endorsements {#sect-endorsements}
-
-This claim allows referencing third party endorsements; for example
-from the device vendor or a certification such as FIPS or Common
-Criteria. The content MAY be referenced by URI, or placed directly
-inline, but either way, the endorsement content or its URI MUST be
-known by the attester at the time that the evidence is generated.
-
-~~~ asn.1
-Endorsements EVIDENCE-CLAIM ::= SEQUENCE SIZE (1..MAX) OF Endorsement
-
-Endorsement ::= CHOICE IDENTIFIED BY TBD {
-    uri     [0] IMPLICIT IA5String,
-    content [1] IMPLICIT OCTET STRING
-}
-~~~
-
-EDNOTE: this needs a bit of thought about what types of endorsements
-we will likely see, and whether OCTET STRING is the right format.
-
 ## Manifests {#sect-manifests}
 
 TODO -- rats-eat-4.2.15
@@ -600,6 +584,10 @@ not have an accurate system clock. If the system is not anticipated
 to have a reliable clock, then this claim SHOULD be omitted and
 the `Nonce` claim used instead.
 
+## Profile (Submodules) {#sect-profile}
+
+TODO -- rats-eat-4.3.2
+
 ## intuse (Intended Use) {#sect-intuse}
 
 ~~~ asn.1
@@ -617,26 +605,6 @@ Note: tags intentionally started at 1 to align with EAT. If the
 IANA registry of intended use claims is extended, then the this
 CHOICE MAY be extended using the same tag values as indicated
 in the EAT registry.
-
-## Nonce {#sect-nonce}
-
-The "nonce" claim is used to provide freshness.
-
-The Nonce claim is used to carry the challenge provided by the caller to
-demonstrate freshness of the generated token. The following constraints
-apply to the nonce-type:
-
-- The length must be reasonable as it may be processed by end entities with limited resources.
-  Therefore, it is RECOMMENDED that the length does not exceed 64 bytes.
-- Only a single nonce value is conveyed.
-
-The nonce claim is defined as follows:
-
-~~~ asn.1
-Nonce EVIDENCE-CLAIM ::= OCTET STRING IDENTIFIED BY TBD
-~~~
-
-See Section 4.1 of {{I-D.ietf-rats-eat}} for a description of this claim.
 
 ## Extensibility
 
